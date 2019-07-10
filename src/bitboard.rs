@@ -1,29 +1,26 @@
 use std::iter;
-use std::{fmt, ops};
 use std::iter::FusedIterator;
+use std::{fmt, ops};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Square(pub u8);
 
 impl fmt::Display for Square {
-    fn fmt(&self, fmt : &mut fmt::Formatter) -> Result<(), fmt::Error> {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let (file, rank) = self.file_rank();
         let actual_rank = ((rank as i8 - 8).abs() as u8 + b'0') as char;
 
-        let _ = fmt.write_str(&format!("{}{}",
-                                       (file + b'a') as char,
-                                       actual_rank));
+        let _ = fmt.write_str(&format!("{}{}", (file + b'a') as char, actual_rank));
         Ok(())
     }
 }
 
 impl Square {
-
-    pub fn from_ints (file : u8, rank : u8) -> Self {
+    pub fn from_ints(file: u8, rank: u8) -> Self {
         debug_assert!(file < 8 && rank < 8);
         Square((rank << 3) | file)
     }
-    pub fn file_rank (self) -> (u8, u8) {
+    pub fn file_rank(self) -> (u8, u8) {
         (self.file(), self.rank())
     }
     pub fn file(self) -> u8 {
@@ -33,19 +30,18 @@ impl Square {
         self.0 >> 3
     }
 
-    pub const H1 : Square = Square(63);
-    pub const G1 : Square = Square(62);
-    pub const E1 : Square = Square(60);
-    pub const C1 : Square = Square(58);
-    pub const A1 : Square = Square(56);
+    pub const H1: Square = Square(63);
+    pub const G1: Square = Square(62);
+    pub const E1: Square = Square(60);
+    pub const C1: Square = Square(58);
+    pub const A1: Square = Square(56);
 
-    pub const H8 : Square = Square(7);
-    pub const G8 : Square = Square(6);
-    pub const E8 : Square = Square(4);
-    pub const C8 : Square = Square(2);
-    pub const A8 : Square = Square(0);
+    pub const H8: Square = Square(7);
+    pub const G8: Square = Square(6);
+    pub const E8: Square = Square(4);
+    pub const C8: Square = Square(2);
+    pub const A8: Square = Square(0);
 }
-
 
 #[derive(PartialEq, Eq, Clone, Copy, Hash)]
 pub struct BitBoard {
@@ -94,16 +90,16 @@ impl BitBoard {
     }
 
     pub const fn get(self, square: Square) -> bool {
-        self.board & (1<<square.0) != 0
+        self.board & (1 << square.0) != 0
     }
     // Sets the square to true
     pub const fn set(self, square: Square) -> Self {
-        BitBoard::from_u64(self.board | 1<<square.0)
+        BitBoard::from_u64(self.board | 1 << square.0)
     }
 
     // Sets the square to false
     pub const fn clear(self, square: Square) -> Self {
-        BitBoard::from_u64(self.board & !(1<<square.0))
+        BitBoard::from_u64(self.board & !(1 << square.0))
     }
 
     pub const fn is_empty(self) -> bool {
@@ -155,9 +151,9 @@ impl BitBoard {
         let k2 = 0x3333_3333_3333_3333;
         let k4 = 0x0f0f_0f0f_0f0f_0f0f;
         let mut x = self.board;
-        x = ((x >> 1) & k1) +  2*(x & k1);
-        x = ((x >> 2) & k2) +  4*(x & k2);
-        x = ((x >> 4) & k4) + 16*(x & k4);
+        x = ((x >> 1) & k1) + 2 * (x & k1);
+        x = ((x >> 2) & k2) + 4 * (x & k2);
+        x = ((x >> 4) & k4) + 16 * (x & k4);
         BitBoard::from_u64(x)
     }
     pub const fn flip_vertical(self) -> Self {
@@ -170,20 +166,24 @@ impl BitBoard {
         let k4 = 0x0f0f_0f0f_0000_0000;
         let mut x = self.board;
         let mut t = k4 & (x ^ (x << 28));
-        x ^=       t ^ (t >> 28) ;
-        t  = k2 & (x ^ (x << 14));
-        x ^=       t ^ (t >> 14) ;
-        t  = k1 & (x ^ (x <<  7));
-        x ^=       t ^ (t >>  7) ;
+        x ^= t ^ (t >> 28);
+        t = k2 & (x ^ (x << 14));
+        x ^= t ^ (t >> 14);
+        t = k1 & (x ^ (x << 7));
+        x ^= t ^ (t >> 7);
         BitBoard::from_u64(x)
     }
     /// Diagonal_id is rank + file
     /// Assumes board is already rotated
     pub fn diagonal(self, diagonal_id: u8) -> u8 {
-        let len = if diagonal_id >= 8 { 15 - diagonal_id } else { diagonal_id + 1 };
+        let len = if diagonal_id >= 8 {
+            15 - diagonal_id
+        } else {
+            diagonal_id + 1
+        };
         let n = diagonal_id as i8 - 7;
         //let offset = ((7 * n + 8)) % 64;
-        let offset = if n <= 0 { n * (-8)} else { 8 * (8 - n) + n };
+        let offset = if n <= 0 { n * (-8) } else { 8 * (8 - n) + n };
         ((self.board >> offset) & !(!0 << len)) as u8
     }
 
@@ -192,7 +192,7 @@ impl BitBoard {
     pub fn antidiagonal(self, diagonal_id: i8) -> u8 {
         let len = 8 - diagonal_id.abs(); // Between 1 and 8
         let n = i16::from(diagonal_id);
-        let offset = if n <= 0 { n * (-8) - n} else { 8 * (8 - n) };
+        let offset = if n <= 0 { n * (-8) - n } else { 8 * (8 - n) };
         ((self.board >> offset) & !(!0 << len as u64)) as u8
     }
 
@@ -200,8 +200,7 @@ impl BitBoard {
         let square = self.board.trailing_zeros();
         if square == 64 {
             None
-        }
-        else {
+        } else {
             Some(Square(square as u8))
         }
     }
@@ -226,7 +225,7 @@ impl IntoIterator for BitBoard {
 }
 
 impl iter::FromIterator<Square> for BitBoard {
-    fn from_iter<T: IntoIterator<Item=Square>>(iter: T) -> Self {
+    fn from_iter<T: IntoIterator<Item = Square>>(iter: T) -> Self {
         let mut board = Self::empty();
         for square in iter {
             board = board.set(square);
@@ -251,8 +250,7 @@ impl Iterator for BitBoardIterator {
         if let Some(next) = self.board.first_piece() {
             self.board = self.board.clear(next);
             Some(next)
-        }
-        else {
+        } else {
             None
         }
     }
