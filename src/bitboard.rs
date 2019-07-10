@@ -100,7 +100,7 @@ impl BitBoard {
     pub const fn set(self, square: Square) -> Self {
         BitBoard::from_u64(self.board | 1<<square.0)
     }
-    #[allow(dead_code)]
+
     // Sets the square to false
     pub const fn clear(self, square: Square) -> Self {
         BitBoard::from_u64(self.board & !(1<<square.0))
@@ -119,7 +119,7 @@ impl BitBoard {
     pub const fn rank(self, rank: u8) -> u8 {
         (self.board >> (rank * 8)) as u8
     }
-    #[allow(dead_code)]
+
     pub const fn file(self, file: u8) -> u8 {
         self.rotate().rank(file)
     }
@@ -149,7 +149,7 @@ impl BitBoard {
         x ^= k4 & (x ^ x.rotate_right(32));
         Self::from_u64(x)
     }
-    #[allow(dead_code)]
+
     pub const fn flip_horizontal(self) -> Self {
         let k1 = 0x5555_5555_5555_5555;
         let k2 = 0x3333_3333_3333_3333;
