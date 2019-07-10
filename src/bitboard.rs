@@ -93,7 +93,7 @@ impl BitBoard {
         BitBoard { board: n }
     }
 
-    pub const fn get(&self, square: Square) -> bool {
+    pub const fn get(self, square: Square) -> bool {
         self.board & (1<<square.0) != 0
     }
     // Sets the square to true
@@ -106,11 +106,11 @@ impl BitBoard {
         BitBoard::from_u64(self.board & !(1<<square.0))
     }
 
-    pub const fn is_empty(&self) -> bool {
+    pub const fn is_empty(self) -> bool {
         self.board == 0
     }
 
-    pub const fn popcount(&self) -> u32 {
+    pub const fn popcount(self) -> u32 {
         self.board.count_ones()
     }
 
@@ -123,13 +123,13 @@ impl BitBoard {
     pub const fn file(self, file: u8) -> u8 {
         self.rotate().rank(file)
     }
-    pub const fn rotate(&self) -> Self {
+    pub const fn rotate(self) -> Self {
         self.flip_vertical().flip_diagonal()
     }
-    pub const fn rotate_270(&self) -> Self {
+    pub const fn rotate_270(self) -> Self {
         self.flip_diagonal().flip_vertical()
     }
-    pub const fn rotate_45(&self) -> Self {
+    pub const fn rotate_45(self) -> Self {
         let k1 = 0xAAAAAAAAAAAAAAAA;
         let k2 = 0xCCCCCCCCCCCCCCCC;
         let k4 = 0xF0F0F0F0F0F0F0F0;
@@ -139,7 +139,7 @@ impl BitBoard {
         x ^= k4 & (x ^ x.rotate_right(32));
         Self::from_u64(x)
     }
-    pub const fn rotate_315(&self) -> Self {
+    pub const fn rotate_315(self) -> Self {
         let k1 = 0x5555555555555555;
         let k2 = 0x3333333333333333;
         let k4 = 0x0f0f0f0f0f0f0f0f;
@@ -150,7 +150,7 @@ impl BitBoard {
         Self::from_u64(x)
     }
     #[allow(dead_code)]
-    pub const fn flip_horizontal(&self) -> Self {
+    pub const fn flip_horizontal(self) -> Self {
         let k1 = 0x5555555555555555;
         let k2 = 0x3333333333333333;
         let k4 = 0x0f0f0f0f0f0f0f0f;
@@ -160,11 +160,11 @@ impl BitBoard {
         x = ((x >> 4) & k4) + 16*(x & k4);
         BitBoard::from_u64(x)
     }
-    pub const fn flip_vertical(&self) -> Self {
+    pub const fn flip_vertical(self) -> Self {
         BitBoard::from_u64(self.board.swap_bytes())
     }
 
-    pub const fn flip_diagonal(&self) -> Self {
+    pub const fn flip_diagonal(self) -> Self {
         let k1 = 0x5500550055005500;
         let k2 = 0x3333000033330000;
         let k4 = 0x0f0f0f0f00000000;
@@ -179,7 +179,7 @@ impl BitBoard {
     }
     /// Diagonal_id is rank + file
     /// Assumes board is already rotated
-    pub fn diagonal(&self, diagonal_id: u8) -> u8 {
+    pub fn diagonal(self, diagonal_id: u8) -> u8 {
         let len = if diagonal_id >= 8 { 15 - diagonal_id } else { diagonal_id + 1 };
         let n = diagonal_id as i8 - 7;
         //let offset = ((7 * n + 8)) % 64;
@@ -189,14 +189,14 @@ impl BitBoard {
 
     /// Diagonal_id is rank - file
     /// Assumes board is already rotated
-    pub fn antidiagonal(&self, diagonal_id: i8) -> u8 {
+    pub fn antidiagonal(self, diagonal_id: i8) -> u8 {
         let len = 8 - diagonal_id.abs(); // Between 1 and 8
         let n = diagonal_id as i16;
         let offset = if n <= 0 { n * (-8) - n} else { 8 * (8 - n) };
         ((self.board >> offset) & !(!0 << len as u64)) as u8
     }
 
-    pub fn first_piece(&self) -> Option<Square> {
+    pub fn first_piece(self) -> Option<Square> {
         let square = self.board.trailing_zeros();
         if square == 64 {
             None
