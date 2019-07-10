@@ -130,9 +130,9 @@ impl BitBoard {
         self.flip_diagonal().flip_vertical()
     }
     pub const fn rotate_45(self) -> Self {
-        let k1 = 0xAAAAAAAAAAAAAAAA;
-        let k2 = 0xCCCCCCCCCCCCCCCC;
-        let k4 = 0xF0F0F0F0F0F0F0F0;
+        let k1 = 0xAAAA_AAAA_AAAA_AAAA;
+        let k2 = 0xCCCC_CCCC_CCCC_CCCC;
+        let k4 = 0xF0F0_F0F0_F0F0_F0F0;
         let mut x = self.board;
         x ^= k1 & (x ^ x.rotate_right(8));
         x ^= k2 & (x ^ x.rotate_right(16));
@@ -140,9 +140,9 @@ impl BitBoard {
         Self::from_u64(x)
     }
     pub const fn rotate_315(self) -> Self {
-        let k1 = 0x5555555555555555;
-        let k2 = 0x3333333333333333;
-        let k4 = 0x0f0f0f0f0f0f0f0f;
+        let k1 = 0x5555_5555_5555_5555;
+        let k2 = 0x3333_3333_3333_3333;
+        let k4 = 0x0f0f_0f0f_0f0f_0f0f;
         let mut x = self.board;
         x ^= k1 & (x ^ x.rotate_right(8));
         x ^= k2 & (x ^ x.rotate_right(16));
@@ -151,9 +151,9 @@ impl BitBoard {
     }
     #[allow(dead_code)]
     pub const fn flip_horizontal(self) -> Self {
-        let k1 = 0x5555555555555555;
-        let k2 = 0x3333333333333333;
-        let k4 = 0x0f0f0f0f0f0f0f0f;
+        let k1 = 0x5555_5555_5555_5555;
+        let k2 = 0x3333_3333_3333_3333;
+        let k4 = 0x0f0f_0f0f_0f0f_0f0f;
         let mut x = self.board;
         x = ((x >> 1) & k1) +  2*(x & k1);
         x = ((x >> 2) & k2) +  4*(x & k2);
@@ -165,9 +165,9 @@ impl BitBoard {
     }
 
     pub const fn flip_diagonal(self) -> Self {
-        let k1 = 0x5500550055005500;
-        let k2 = 0x3333000033330000;
-        let k4 = 0x0f0f0f0f00000000;
+        let k1 = 0x5500_5500_5500_5500;
+        let k2 = 0x3333_0000_3333_0000;
+        let k4 = 0x0f0f_0f0f_0000_0000;
         let mut x = self.board;
         let mut t = k4 & (x ^ (x << 28));
         x ^=       t ^ (t >> 28) ;
@@ -191,7 +191,7 @@ impl BitBoard {
     /// Assumes board is already rotated
     pub fn antidiagonal(self, diagonal_id: i8) -> u8 {
         let len = 8 - diagonal_id.abs(); // Between 1 and 8
-        let n = diagonal_id as i16;
+        let n = i16::from(diagonal_id);
         let offset = if n <= 0 { n * (-8) - n} else { 8 * (8 - n) };
         ((self.board >> offset) & !(!0 << len as u64)) as u8
     }
