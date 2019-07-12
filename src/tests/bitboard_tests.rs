@@ -1,7 +1,7 @@
 use crate::bitboard::BitBoard;
 use crate::bitboard::Square;
 
-const CHESS_START_BOARD : BitBoard = BitBoard::from_u64(0xFFFF_0000_0000_FFFF);
+const CHESS_START_BOARD: BitBoard = BitBoard::from_u64(0xFFFF_0000_0000_FFFF);
 
 #[test]
 fn rotate() {
@@ -20,8 +20,11 @@ fn rotate() {
             assert!(board.get(Square::from_ints(file, rank)));
         }
         for &file in [2, 3, 4, 5].iter() {
-            assert!(!board.get(Square::from_ints(file, rank)),
-                    "Found piece in the middle of board \n{:?}", board);
+            assert!(
+                !board.get(Square::from_ints(file, rank)),
+                "Found piece in the middle of board \n{:?}",
+                board
+            );
         }
     }
 }
@@ -95,10 +98,20 @@ fn rotate_45() {
 #[test]
 fn long_diagonal() {
     let board = CHESS_START_BOARD.rotate_45();
-    assert_eq!(board.diagonal(7), 0b1100_0011, "\nDiagonal: {:b}\n{:?}",
-               board.diagonal(7), BitBoard::from_u64(board.board));
-    assert_eq!(board.diagonal(8), 0b0100_0011, "\nDiagonal: {:b}\n{:?}",
-               board.diagonal(8), BitBoard::from_u64(board.board));
+    assert_eq!(
+        board.diagonal(7),
+        0b1100_0011,
+        "\nDiagonal: {:b}\n{:?}",
+        board.diagonal(7),
+        BitBoard::from_u64(board.board)
+    );
+    assert_eq!(
+        board.diagonal(8),
+        0b0100_0011,
+        "\nDiagonal: {:b}\n{:?}",
+        board.diagonal(8),
+        BitBoard::from_u64(board.board)
+    );
     assert_eq!(board.diagonal(9), 0b11, "\n{:?}", board);
     assert_eq!(board.diagonal(13), 0b11, "\n{:?}", board);
     assert_eq!(board.diagonal(14), 1);
@@ -110,10 +123,20 @@ fn long_diagonal() {
 #[test]
 fn long_antidiagonal() {
     let board = CHESS_START_BOARD.rotate_315();
-    assert_eq!(board.antidiagonal(0), 0b1100_0011, "\nDiagonal: {:b}\n{:?}",
-               board.antidiagonal(0), BitBoard::from_u64(board.board));
-    assert_eq!(board.antidiagonal(1), 0b0110_0001, "\nDiagonal: {:b}\n{:?}",
-               board.antidiagonal(1), board);
+    assert_eq!(
+        board.antidiagonal(0),
+        0b1100_0011,
+        "\nDiagonal: {:b}\n{:?}",
+        board.antidiagonal(0),
+        BitBoard::from_u64(board.board)
+    );
+    assert_eq!(
+        board.antidiagonal(1),
+        0b0110_0001,
+        "\nDiagonal: {:b}\n{:?}",
+        board.antidiagonal(1),
+        board
+    );
     assert_eq!(board.antidiagonal(2), 0b11_0000, "\n{:?}", board);
     assert_eq!(board.antidiagonal(6), 0b11, "\n{:?}", board);
     assert_eq!(board.antidiagonal(7), 1);
