@@ -259,3 +259,34 @@ impl Iterator for BitBoardIterator {
 }
 
 impl FusedIterator for BitBoardIterator {}
+
+/// Iterate over all 64 squares of the board
+pub struct SquaresIterator {
+    index: u8,
+}
+
+impl SquaresIterator {
+    pub fn new() -> Self {
+        SquaresIterator { index: 0 }
+    }
+}
+
+impl Default for SquaresIterator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Iterator for SquaresIterator {
+    type Item = Square;
+    fn next(&mut self) -> Option<Square> {
+        if self.index >= 64 {
+            None
+        } else {
+            self.index += 1;
+            Some(Square(self.index - 1))
+        }
+    }
+}
+
+impl FusedIterator for SquaresIterator {}
