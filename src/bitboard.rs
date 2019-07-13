@@ -9,7 +9,7 @@ impl fmt::Display for Square {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let (file, rank) = self.file_rank();
 
-        let _ = fmt.write_str(&format!("{}{}", (file + b'a') as char, (rank + b'a') as char));
+        let _ = fmt.write_str(&format!("{}{}", (file + b'a') as char, (rank + b'0') as char));
         Ok(())
     }
 }
