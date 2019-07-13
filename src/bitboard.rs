@@ -8,9 +8,8 @@ pub struct Square(pub u8);
 impl fmt::Display for Square {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let (file, rank) = self.file_rank();
-        let actual_rank = ((rank as i8 - 8).abs() as u8 + b'0') as char;
 
-        let _ = fmt.write_str(&format!("{}{}", (file + b'a') as char, actual_rank));
+        let _ = fmt.write_str(&format!("{}{}", (file + b'a') as char, (rank + b'a') as char));
         Ok(())
     }
 }
