@@ -32,17 +32,17 @@ impl Square {
         self.0 >> 3
     }
 
-    pub const H1: Square = Square(8);
+    pub const H1: Square = Square(7);
     pub const G1: Square = Square(6);
     pub const E1: Square = Square(4);
     pub const C1: Square = Square(2);
     pub const A1: Square = Square(0);
 
     pub const H8: Square = Square(63);
-    pub const G8: Square = Square(61);
-    pub const E8: Square = Square(59);
-    pub const C8: Square = Square(57);
-    pub const A8: Square = Square(55);
+    pub const G8: Square = Square(62);
+    pub const E8: Square = Square(60);
+    pub const C8: Square = Square(58);
+    pub const A8: Square = Square(56);
 }
 
 #[derive(PartialEq, Eq, Clone, Copy, Hash)]
