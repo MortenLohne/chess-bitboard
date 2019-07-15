@@ -7,6 +7,8 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+# Get crate directly from github, because the crates.io version is missing a bugfix.
+bitintr = { git = "https://github.com/gnzlbg/bitintr" }
 
 [dev-dependencies]
 quickcheck = "0.7"

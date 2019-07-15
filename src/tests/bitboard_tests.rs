@@ -4,6 +4,34 @@ use crate::bitboard::Square;
 const CHESS_START_BOARD: BitBoard = BitBoard::from_u64(0xFFFF_0000_0000_FFFF);
 
 #[test]
+fn pext_test() {
+    let board = BitBoard::from_u64(255 << 8);
+    assert_eq!(board.extract_pieces(BitBoard::full()), board);
+    assert!(board.extract_pieces(BitBoard::empty()).is_empty());
+
+    assert_eq!(
+        board.extract_pieces(BitBoard::from_u64(1023 ^ 255)),
+        BitBoard::from_u64(3)
+    );
+    assert_eq!(
+        board.extract_pieces(BitBoard::from_u64(1023)),
+        BitBoard::from_u64(512 + 256)
+    );
+}
+
+#[test]
+fn pdep_test() {
+    let board = BitBoard::from_u64(255 << 8);
+    assert_eq!(board.deposit_pieces(BitBoard::full()), board);
+    assert!(board.deposit_pieces(BitBoard::empty()).is_empty());
+
+    assert_eq!(
+        board.deposit_pieces(BitBoard::from_u64(1023)),
+        BitBoard::from_u64(512 + 256)
+    );
+}
+
+#[test]
 fn rotate() {
     let empty = BitBoard::empty();
     assert_eq!(empty, empty.rotate());
@@ -85,6 +113,22 @@ quickcheck! {
 
     fn from_to_iterator(bitboard: BitBoard) -> bool {
         bitboard.into_iter().collect::<BitBoard>() == bitboard
+    }
+
+    fn pext_quickcheck(board1: BitBoard, board2: BitBoard) -> bool {
+        (board1 & board2).popcount() == board1.extract_pieces(board2).popcount()
+    }
+
+    fn pdep_quickcheck(board1: BitBoard, board2: BitBoard) -> bool {
+        let bits_to_deposit = board2.popcount();
+        let lower_n_bits = 2_u64.pow(bits_to_deposit) - 1;
+        (BitBoard::from_u64(lower_n_bits) & board1).popcount() == board1.deposit_pieces(board2).popcount()
+    }
+
+    fn pext_pdep_quickcheck(board1: BitBoard, board2: BitBoard) -> bool {
+        let extracted = board1.extract_pieces(board2);
+        let deposited = extracted.deposit_pieces(board2);
+        (board1 & (!board2)) | (board1 & (deposited)) == board1
     }
 }
 

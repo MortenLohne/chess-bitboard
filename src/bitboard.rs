@@ -1,3 +1,4 @@
+use bitintr::{Pdep, Pext};
 use std::iter;
 use std::iter::FusedIterator;
 use std::{fmt, ops};
@@ -99,6 +100,12 @@ impl BitBoard {
     #[inline]
     pub const fn empty() -> Self {
         BitBoard { board: 0 }
+    }
+    #[inline]
+    pub const fn full() -> Self {
+        BitBoard {
+            board: u64::max_value(),
+        }
     }
     #[inline]
     pub const fn from_u64(n: u64) -> Self {
@@ -235,6 +242,16 @@ impl BitBoard {
         } else {
             Some(Square(square as u8))
         }
+    }
+
+    #[inline]
+    pub fn extract_pieces(self, mask: Self) -> Self {
+        Self::from_u64(self.board.pext(mask.board))
+    }
+
+    #[inline]
+    pub fn deposit_pieces(self, mask: Self) -> Self {
+        Self::from_u64(self.board.pdep(mask.board))
     }
 }
 
