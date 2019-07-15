@@ -9,7 +9,11 @@ impl fmt::Display for Square {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let (file, rank) = self.file_rank();
 
-        let _ = fmt.write_str(&format!("{}{}", (file + b'a') as char, (rank + b'1') as char));
+        let _ = fmt.write_str(&format!(
+            "{}{}",
+            (file + b'a') as char,
+            (rank + b'1') as char
+        ));
         Ok(())
     }
 }
@@ -209,7 +213,6 @@ impl BitBoard {
             diagonal_id + 1
         };
         let n = diagonal_id as i8 - 7;
-        //let offset = ((7 * n + 8)) % 64;
         let offset = if n <= 0 { n * (-8) } else { 8 * (8 - n) + n };
         ((self.board >> offset) & !(!0 << len)) as u8
     }
